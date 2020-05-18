@@ -14,14 +14,7 @@ namespace CombAlg3
         static void Main(string[] args)
         {
             var data = GetStartData();
-            Console.WriteLine("Vertex count: " + data.Item2);
-            Console.WriteLine($"Start: {data.Item3 + 1} Target: {data.Item4 + 1}");
-            foreach (var edge in data.Item1)
-                Console.WriteLine(edge.ToString());
-            Console.WriteLine($"Path from {data.Item3 + 1} to {data.Item4 + 1}:");
-            Console.WriteLine(GetMinPath(data));
-            Console.ReadKey();
-
+            WriteAnswer(GetMinPath(data));
         }
 
         static string GetMinPath(Tuple<List<Edge>, int, int, int> data)
@@ -94,6 +87,28 @@ namespace CombAlg3
                 Environment.Exit(1);
             }
             return new Tuple<List<Edge>, int, int, int>(edges, vertexCount, start, target);
+        }
+
+        static void WriteAnswer(string path)
+        {
+            try
+            {
+                using (var sw = new StreamWriter("./out.txt", false, Encoding.Default))
+                {
+                    if (path != null)
+                    {
+                        sw.WriteLine("Y");
+                        sw.WriteLine(path);
+                    }
+                    else sw.WriteLine("N");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
     }
 
