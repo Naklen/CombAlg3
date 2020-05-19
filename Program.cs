@@ -14,32 +14,32 @@ namespace CombAlg3
         static void Main(string[] args)
         {
             var data = GetStartData();
-            WriteAnswer(GetMinPath(data));
+            WriteAnswer(GetMaxPath(data));
         }
 
-        static Tuple<string, string> GetMinPath(Tuple<List<Edge>, int, int, int> data)
+        static Tuple<string, string> GetMaxPath(Tuple<List<Edge>, int, int, int> data)
         {
             var edges = data.Item1;
             var vCount = data.Item2;
             var start = data.Item3;
             var target = data.Item4;
-            var minCosts = Enumerable.Repeat(int.MaxValue, vCount).ToArray();
+            var maxCosts = Enumerable.Repeat(-1, vCount).ToArray();
             var previous = Enumerable.Repeat(-1, vCount).ToArray();
-            minCosts[start] = 0;
+            maxCosts[start] = 1;
             while (true)
             {
                 var cont = false;
                 for (int i = 0; i < edges.Count; i++)
-                    if (minCosts[edges[i].From] < int.MaxValue)
-                        if (minCosts[edges[i].To] > minCosts[edges[i].From] + edges[i].Cost)
+                    if (maxCosts[edges[i].From] > 0)
+                        if (maxCosts[edges[i].To] < maxCosts[edges[i].From] * edges[i].Cost)
                         { 
-                            minCosts[edges[i].To] = minCosts[edges[i].From] + edges[i].Cost;
+                            maxCosts[edges[i].To] = maxCosts[edges[i].From] * edges[i].Cost;
                             previous[edges[i].To] = edges[i].From;
                             cont = true;
                         }
                 if (!cont) break;
             }
-            if (minCosts[target] == int.MaxValue)
+            if (maxCosts[target] < 0)
                 return null;
             var reversedPath = new Queue<int>();
             var cur = target;
