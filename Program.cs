@@ -17,7 +17,7 @@ namespace CombAlg3
             WriteAnswer(GetMinPath(data));
         }
 
-        static string GetMinPath(Tuple<List<Edge>, int, int, int> data)
+        static Tuple<string, string> GetMinPath(Tuple<List<Edge>, int, int, int> data)
         {
             var edges = data.Item1;
             var vCount = data.Item2;
@@ -48,11 +48,18 @@ namespace CombAlg3
                 reversedPath.Enqueue(cur);
                 cur = previous[cur];
             }
-            var result = "";
-            var path = reversedPath.Reverse();
-            foreach (var v in path)
-                result += (v + 1) + " ";
-            result = result.Substring(0, result.Length - 1);
+            var pathStr = "";
+            var totalWeight = 1;
+            var path = reversedPath.Reverse().ToArray();
+            for (int i = 0; i < path.Length; i++) 
+            {
+                pathStr += (path[i] + 1) + " ";
+                foreach (var edge in edges)
+                    if (i < path.Length - 1 && (edge.From == path[i] && edge.To == path[i + 1]))
+                        totalWeight *= edge.Cost;
+            }
+            pathStr = pathStr.Substring(0, pathStr.Length - 1);
+            var result = new Tuple<string, string>(pathStr, totalWeight.ToString());
             return result;
         }
 
@@ -89,7 +96,7 @@ namespace CombAlg3
             return new Tuple<List<Edge>, int, int, int>(edges, vertexCount, start, target);
         }
 
-        static void WriteAnswer(string path)
+        static void WriteAnswer(Tuple<string, string> path)
         {
             try
             {
@@ -98,7 +105,8 @@ namespace CombAlg3
                     if (path != null)
                     {
                         sw.WriteLine("Y");
-                        sw.WriteLine(path);
+                        sw.WriteLine(path.Item1);
+                        sw.WriteLine(path.Item2);
                     }
                     else sw.WriteLine("N");
                 }
